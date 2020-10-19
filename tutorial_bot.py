@@ -1,12 +1,14 @@
 # Bot created follwing tutorial by Lucas on YouTube https://www.youtube.com/channel/UCR-zOCvDCayyYy1flR5qaAg
 
 import discord
+import os
 import random
 import bot_settings #local file .gitignore'd as it contains the bot token
 from discord.ext import commands
 
 client = commands.Bot(command_prefix='!')
 
+# Events
 @client.event
 async def on_ready():
     print(f"We have logged in as {client.user}")
@@ -19,6 +21,7 @@ async def on_member_join(member):
 async def on_member_remove(member):
     print(f"{member} has left a server.")
 
+# Commands
 @client.command()
 async def ping(ctx):
     await ctx.send(f"Pong! {round(client.latency*1000)}ms")
@@ -74,5 +77,18 @@ async def unban(ctx, *, user):
             await ctx.guild.unban(ban_entry.user)
             await ctx.send(f"Unbanned {ban_entry.user.mention}")
             return
+
+# Cog stuff
+@client.command()
+async def load(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
+
+@client.command()
+async def unload(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 client.run(bot_settings.token)
