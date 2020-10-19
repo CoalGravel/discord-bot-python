@@ -1,3 +1,5 @@
+# Bot created follwing tutorial by Lucas on YouTube https://www.youtube.com/channel/UCR-zOCvDCayyYy1flR5qaAg
+
 import discord
 import random
 import bot_settings #local file .gitignore'd as it contains the bot token
@@ -46,20 +48,31 @@ async def eight_ball(ctx, *, question):
     await ctx.send(random.choice(responses))
 
 @client.command()
-async def roll(ctx, dice):
-    quantity = dice.split('d')[0]
-    size = dice.split('d')[1]
-    result = []
-    for i in range(int(quantity)):
-        result.append(random.randrange(int(size)) + 1)
-    await ctx.send(f"Result: {quantity}d{size} {result}\nTotal: {sum(result)}")
-
-@client.command()
 async def clear(ctx, amount=-1):
     amount = round(amount) + 1
     if amount <= 0:
         await ctx.send("Please specify how many messages to clear.")
     await ctx.channel.purge(limit=amount)
     await ctx.send(f"Cleared {amount-1} messages.")
+
+@client.command()
+async def kick(ctx, user : discord.Member, reason=None):
+    await user.kick(reason=reason)
+    await ctx.send(f"Kicked {user.mention}")
+
+@client.command()
+async def ban(ctx, user : discord.Member, reason=None):
+    await user.ban(reason=reason)
+    await ctx.send(f"Banned {user.mention}")
+
+@client.command()
+async def unban(ctx, *, user):
+    banned_users = await ctx.guild.bans()
+    user_name, user_discriminator = user.split('#')
+    for ban_entry in banned_users:
+        if (ban_entry.user.name, ban_entry.user.discriminator) == (user_name, user_discriminator):
+            await ctx.guild.unban(ban_entry.user)
+            await ctx.send(f"Unbanned {ban_entry.user.mention}")
+            return
 
 client.run(bot_settings.token)
