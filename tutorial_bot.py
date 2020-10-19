@@ -25,6 +25,11 @@ async def on_member_join(member):
 async def on_member_remove(member):
     print(f"{member} has left a server.")
 
+# @client.event
+# async def on_command_error(ctx, error): # This is not advisable as a blanket error statement prevents the error log in the bot's terminal
+#     if isinstance(error, commands.MissingRequiredArgument):
+#         await ctx.send('Please pass in all required arguments.')
+
 # Tasks
 @tasks.loop(seconds=10)
 async def change_status():
@@ -58,6 +63,11 @@ async def eight_ball(ctx, *, question):
                 "Outlook not so good.",
                 "Very doubtful."]
     await ctx.send(random.choice(responses))
+
+@eight_ball.error
+async def eight_ball_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Please ask a question.')
 
 @client.command()
 async def clear(ctx, amount=-1):
