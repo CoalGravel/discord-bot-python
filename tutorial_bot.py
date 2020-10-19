@@ -4,14 +4,17 @@ import discord
 import os
 import random
 import bot_settings #local file .gitignore'd as it contains the bot token
-from discord.ext import commands
+from discord.ext import commands, tasks
+from itertools import cycle
 
 client = commands.Bot(command_prefix='!')
+status = cycle(['Status 0', 'Status 1'])
 
 # Events
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=discord.Game("with the API"))
+    change_status.start()
     print(f"We have logged in as {client.user}")
 
 @client.event
@@ -21,6 +24,11 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(f"{member} has left a server.")
+
+# Tasks
+@tasks.loop(seconds=10)
+async def change_status():
+    await client.change_presence(activity=discord.Game(next(status)))
 
 # Commands
 @client.command()
