@@ -70,12 +70,21 @@ async def eight_ball_error(ctx, error):
         await ctx.send('Please ask a question.')
 
 @client.command()
+@commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount=-1):
     amount = round(amount) + 1
     if amount <= 0:
         await ctx.send("Please specify how many messages to clear.")
     await ctx.channel.purge(limit=amount)
     await ctx.send(f"Cleared {amount-1} messages.")
+
+# def is_it_me(ctx):
+#     return ctx.author.id == bot_settings.userid
+
+#client.command()
+#commands.check(is_it_me) #checks that the user is the one specified in bot_settings
+#async def example_command(ctx)
+#     pass
 
 @client.command()
 async def kick(ctx, user : discord.Member, reason=None):
