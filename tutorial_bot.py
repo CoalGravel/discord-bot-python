@@ -11,6 +11,7 @@ client = commands.Bot(command_prefix='!')
 # Events
 @client.event
 async def on_ready():
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("with the API"))
     print(f"We have logged in as {client.user}")
 
 @client.event
