@@ -45,4 +45,21 @@ async def eight_ball(ctx, *, question):
                 "Very doubtful."]
     await ctx.send(random.choice(responses))
 
+@client.command()
+async def roll(ctx, dice):
+    quantity = dice.split('d')[0]
+    size = dice.split('d')[1]
+    result = []
+    for i in range(int(quantity)):
+        result.append(random.randrange(int(size)) + 1)
+    await ctx.send(f"Result: {quantity}d{size} {result}\nTotal: {sum(result)}")
+
+@client.command()
+async def clear(ctx, amount=-1):
+    amount = round(amount) + 1
+    if amount <= 0:
+        await ctx.send("Please specify how many messages to clear.")
+    await ctx.channel.purge(limit=amount)
+    await ctx.send(f"Cleared {amount-1} messages.")
+
 client.run(bot_settings.token)
