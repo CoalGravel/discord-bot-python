@@ -1,3 +1,5 @@
+# https://discordpy.readthedocs.io/en/latest/quickstart.html
+
 import discord
 import bot_settings
 
